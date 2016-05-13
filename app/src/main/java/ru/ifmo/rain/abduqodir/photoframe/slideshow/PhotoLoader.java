@@ -4,7 +4,6 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.yandex.disk.client.Credentials;
 import com.yandex.disk.client.DownloadListener;
@@ -65,7 +64,6 @@ public class PhotoLoader extends AsyncTaskLoader <File> {
         }
       });
     } catch (Exception e) {
-      Log.d("loadInBackground", "Exception while downloading file: " + photoItem.getFullPath(), e);
       savingFile.delete();
       return null;
     } finally {
@@ -78,12 +76,10 @@ public class PhotoLoader extends AsyncTaskLoader <File> {
       try {
         Thread.sleep(SlideshowActivity.SLIDE_CHANGE_DELAY - loadingTime);
       } catch (InterruptedException e) {
-        Log.d("sleepInterruption", e.getMessage());
         savingFile.delete();
         return null;
       }
     }
-    Log.d("loadInBackground", "loaded in " + loadingTime + ", returned in " + (System.currentTimeMillis() - startingTime));
     return savingFile;
   }
 }

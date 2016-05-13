@@ -3,7 +3,6 @@ package ru.ifmo.rain.abduqodir.photoframe.directory_content;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.yandex.disk.client.Credentials;
 import com.yandex.disk.client.ListItem;
