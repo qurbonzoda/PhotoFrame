@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Photo Frame</string>
+
+    <string name="title_activity_fullscreen_slideshow">Slideshow</string>
+    <string name="dialog_watch_slideshow">View photos in slideshow?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_photos_in_folder">This folder doesn\'t have any photo</string>
+    <string name="thats_all">That\'s all!</string>
+</resources>

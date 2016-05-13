@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Фоторамка</string>
+    <string name="cancel">Отменить</string>
+    <string name="dialog_watch_slideshow">Посмотреть фото в режиме слайд-шоу?</string>
+    <string name="title_activity_fullscreen_slideshow">Слайд-шоу</string>
+    <string name="yes">Да</string>
+    <string name="no_photos_in_folder">В этой папки нет картинок</string>
+    <string name="thats_all">Все!</string>
+</resources>

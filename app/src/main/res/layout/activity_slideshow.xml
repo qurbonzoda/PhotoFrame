@@ -1,0 +1,16 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00bcd4"
+    tools:context=".slideshow.SlideshowActivity">
+
+    <ImageView android:id="@+id/fullscreenContent"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:keepScreenOn="true"
+               android:gravity="center"/>
+
+    <include layout="@layout/progress_bar"/>
+
+</FrameLayout>
