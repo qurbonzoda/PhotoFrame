@@ -7,3 +7,6 @@
 /build
 gradlew
 gradlew.bat
+/yandex-disk-sdk/build
+/yandex-disk-sdk/local.properties
+

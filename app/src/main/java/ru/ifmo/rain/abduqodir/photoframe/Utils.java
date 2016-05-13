@@ -21,7 +21,7 @@ public class Utils {
           case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             return R.drawable.docx_128;
           case "application/pdf":
-            return R.drawable.pdf2_48;
+            return R.drawable.pdf_48;
           case "image/vnd.djvu":
             return R.drawable.djvu_50;
           case "text/plain":
