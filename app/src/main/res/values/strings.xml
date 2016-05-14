@@ -2,7 +2,7 @@
     <string name="app_name">Photo Frame</string>
 
     <string name="title_activity_slideshow">Slideshow</string>
-    <string name="dialog_view_slideshow">View photos in slideshow</string>
+    <string name="dialog_view_slideshow">Slideshow</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_show_content">Show content</string>

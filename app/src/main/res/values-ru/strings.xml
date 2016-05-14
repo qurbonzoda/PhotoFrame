@@ -9,7 +9,7 @@
     <string name="dialog_restart">Начать сначало</string>
     <string name="dialog_show_content">Посмотреть cодержимое</string>
     <string name="dialog_slides_finished">Слайды закончились</string>
-    <string name="dialog_view_slideshow">Посмотреть фото в режиме слайд-шоу</string>
+    <string name="dialog_view_slideshow">Cлайд-шоу</string>
     <string name="toast_unable_to_load">Упс, что-то пошло не так. Мы не смогли загрузить содержимое</string>
     <string name="open">Открыть</string>
 </resources>
