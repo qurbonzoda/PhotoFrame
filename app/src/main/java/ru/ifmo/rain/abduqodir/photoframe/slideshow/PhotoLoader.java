@@ -17,14 +17,14 @@ import java.io.OutputStream;
 
 import ru.ifmo.rain.abduqodir.photoframe.Utils;
 
-public class PhotoLoader extends AsyncTaskLoader <File> {
+public class PhotoLoader extends AsyncTaskLoader<File> {
 
-  @NonNull
-  private Context context;
   @NonNull
   Credentials credentials;
   @NonNull
   ListItem photoItem;
+  @NonNull
+  private Context context;
 
   public PhotoLoader(@NonNull Context context, @NonNull Credentials credentials,
                      @NonNull ListItem photoItem) {
@@ -57,12 +57,12 @@ public class PhotoLoader extends AsyncTaskLoader <File> {
           .downloadPreview(TransportClient
                   .makePreviewPath(TransportClient
                       .encodeURL(photoItem.getFullPath()), TransportClient.PreviewSize.XXXL),
-          new DownloadListener() {
-        @Override
-        public OutputStream getOutputStream(boolean append) throws IOException {
-          return new FileOutputStream(savingFile);
-        }
-      });
+              new DownloadListener() {
+                @Override
+                public OutputStream getOutputStream(boolean append) throws IOException {
+                  return new FileOutputStream(savingFile);
+                }
+              });
     } catch (Exception e) {
       savingFile.delete();
       return null;

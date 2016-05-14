@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_view_in_slideshow"
+        android:icon="@drawable/ic_action_slideshow"
+        android:title="@string/dialog_view_slideshow"
+        app:showAsAction="always"/>
+</menu>

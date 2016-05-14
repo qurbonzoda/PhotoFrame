@@ -8,18 +8,18 @@
         android:id="@+id/icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_margin="12dp"
         android:layout_gravity="center"
+        android:layout_margin="12dp"
         tools:src="@drawable/file_48"/>
 
     <ImageView
         android:id="@+id/shared"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_gravity="center"
         android:layout_margin="12dp"
         android:padding="10dp"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:src="@drawable/shared_64"/>
+        android:src="@drawable/shared_64"
+        android:visibility="gone"/>
 
 </FrameLayout>

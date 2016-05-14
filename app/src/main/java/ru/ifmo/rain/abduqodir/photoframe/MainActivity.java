@@ -1,6 +1,5 @@
 package ru.ifmo.rain.abduqodir.photoframe;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
@@ -51,11 +50,10 @@ public class MainActivity extends AppCompatActivity {
       if (url.startsWith(CALLBACK_URL)) {
         UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(url.replace('#', '?'));
         String token = sanitizer.getValue("access_token");
+        Credentials credentials = new Credentials(CLIENT_ID, token);
 
-        Intent intent = new Intent(view.getContext(), DirectoryContentActivity.class);
-        intent.putExtra(DirectoryContentActivity.CREDENTIALS, new Credentials(CLIENT_ID, token));
-        intent.putExtra(DirectoryContentActivity.DIRECTORY, DirectoryContentActivity.ROOT_DIRECTORY);
-        startActivity(intent);
+        Utils.showDirectoryContent(view.getContext(), credentials,
+            DirectoryContentActivity.ROOT_DIRECTORY, false);
       } else {
         view.loadUrl(url);
       }
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onPageStarted (WebView view, String url, Bitmap favicon) {
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
       progressBar.setVisibility(View.VISIBLE);
     }
 

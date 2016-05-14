@@ -1,9 +1,7 @@
 package ru.ifmo.rain.abduqodir.photoframe.directory_content;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,8 +77,6 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
 
 
   static class FileItemHolder extends RecyclerView.ViewHolder {
-    private static final int KILO = 1024;
-    private static final int MEGA = 1048576;
 
     @NonNull
     ImageView icon;
@@ -106,13 +102,7 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
       SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.DATE_FORMAT, Locale.getDefault());
       String lastUpdatedTime = dateFormat.format(new Date(listItem.getLastUpdated()));
 
-      if (listItem.getContentLength() >= MEGA) {
-        double size = (double) listItem.getContentLength() / MEGA;
-        metaInfo.setText(String.format("%.1f MB ", size) + lastUpdatedTime);
-      } else {
-        double size = (double) listItem.getContentLength() / KILO;
-        metaInfo.setText(String.format("%.1f KB ", size) + lastUpdatedTime);
-      }
+      metaInfo.setText(Utils.getFileSize(listItem.getContentLength()) + " " + lastUpdatedTime);
 
       int resourceId = (Utils.getFileResourceId(listItem.getMediaType(), listItem.getContentType()));
       icon.setImageResource(resourceId);
@@ -143,7 +133,7 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
     final Credentials credentials;
 
     public FolderItemHolder(@NonNull View itemView, @NonNull Credentials credentials,
-                            boolean isParentShared, DirectoryContentActivity activity) {
+                            boolean isParentShared, @NonNull DirectoryContentActivity activity) {
       super(itemView);
       this.credentials = credentials;
       this.isParentShared = isParentShared;
@@ -173,23 +163,18 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public boolean onLongClick(View v) {
-      DialogFragment dialog = new NoticeDialogFragment();
+      Bundle callbackArgs = new Bundle();
+      callbackArgs.putString(DirectoryContentActivity.DIRECTORY, path);
 
-      Bundle args = new Bundle();
-      args.putString(DirectoryContentActivity.DIRECTORY, path);
-      dialog.setArguments(args);
+      Utils.showMenuDialog(activity, R.string.dialog_cancel, R.string.dialog_view_slideshow,
+          R.string.open, callbackArgs);
 
-      dialog.show(activity.getSupportFragmentManager(), "NoticeDialogFragment");
       return false;
     }
 
     @Override
     public void onClick(View v) {
-      Intent intent = new Intent(v.getContext(), DirectoryContentActivity.class);
-      intent.putExtra(DirectoryContentActivity.CREDENTIALS, credentials);
-      intent.putExtra(DirectoryContentActivity.DIRECTORY, path);
-      intent.putExtra(DirectoryContentActivity.IS_SHARED, isFolderShared);
-      v.getContext().startActivity(intent);
+      Utils.showDirectoryContent(v.getContext(), credentials, path, isFolderShared);
     }
   }
 }

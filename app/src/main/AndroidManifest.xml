@@ -26,7 +26,7 @@
         <activity
             android:name=".slideshow.SlideshowActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_fullscreen_slideshow"
+            android:label="@string/title_activity_slideshow"
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

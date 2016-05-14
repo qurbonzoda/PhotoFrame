@@ -7,13 +7,36 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import ru.ifmo.rain.abduqodir.photoframe.R;
-
 public class NoticeDialogFragment extends DialogFragment {
 
+  public static final String MESSAGE = "message";
+  public static final String NEGATIVE_BUTTON = "negative_button";
+  public static final String POSITIVE_BUTTON = "positive_button";
+  public static final String NEUTRAL_BUTTON = "neutral_button";
+  public static final String CALLBACK_ARGS = "callback_args";
+
+  public static NoticeDialogFragment newInstance(String message, String negativeButton,
+                                                 String positiveButton, String neutralButton,
+                                                 Bundle callbackArgs) {
+    Bundle bundle = new Bundle();
+    bundle.putString(MESSAGE, message);
+    bundle.putString(NEGATIVE_BUTTON, negativeButton);
+    bundle.putString(POSITIVE_BUTTON, positiveButton);
+    bundle.putString(NEUTRAL_BUTTON, neutralButton);
+    bundle.putBundle(CALLBACK_ARGS, callbackArgs);
+
+    NoticeDialogFragment dialog = new NoticeDialogFragment();
+    dialog.setArguments(bundle);
+
+    return dialog;
+  }
+
   public interface NoticeDialogListener {
-    void onDialogPositiveClick(DialogFragment dialog, String path);
-    void onDialogNegativeClick(DialogFragment dialog, String path);
+    void onDialogPositiveClick(DialogFragment dialog, Bundle args);
+
+    void onDialogNegativeClick(DialogFragment dialog, Bundle args);
+
+    void onDialogNeutralClick(DialogFragment dialog, Bundle args);
   }
 
   NoticeDialogListener mListener;
@@ -34,13 +57,19 @@ public class NoticeDialogFragment extends DialogFragment {
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-    builder.setTitle(R.string.dialog_watch_slideshow)
-        .setPositiveButton(R.string.yes,
-            (dialog, id) -> mListener.onDialogPositiveClick(NoticeDialogFragment.this,
-                this.getArguments().getString(DirectoryContentActivity.DIRECTORY)))
-        .setNeutralButton(R.string.cancel,
-            (dialog, id) -> mListener.onDialogNegativeClick(NoticeDialogFragment.this,
-                this.getArguments().getString(DirectoryContentActivity.DIRECTORY)));
+    String message = getArguments().getString(MESSAGE);
+    String negativeButton = getArguments().getString(NEGATIVE_BUTTON);
+    String positiveButton = getArguments().getString(POSITIVE_BUTTON);
+    String neutralButton = getArguments().getString(NEUTRAL_BUTTON);
+    Bundle callbackArgs = getArguments().getBundle(CALLBACK_ARGS);
+
+    builder.setMessage(message)
+        .setPositiveButton(positiveButton,
+            (dialog, id) -> mListener.onDialogPositiveClick(NoticeDialogFragment.this, callbackArgs))
+        .setNegativeButton(negativeButton,
+            (dialog, id) -> mListener.onDialogNegativeClick(NoticeDialogFragment.this, callbackArgs))
+        .setNeutralButton(neutralButton,
+            (dialog, id) -> mListener.onDialogNeutralClick(NoticeDialogFragment.this, callbackArgs));
 
     return builder.create();
 

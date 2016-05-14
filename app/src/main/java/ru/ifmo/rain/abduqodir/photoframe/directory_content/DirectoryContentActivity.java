@@ -1,16 +1,17 @@
 package ru.ifmo.rain.abduqodir.photoframe.directory_content;
 
 import android.app.LoaderManager;
-import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.yandex.disk.client.Credentials;
 import com.yandex.disk.client.ListItem;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.ifmo.rain.abduqodir.photoframe.R;
-import ru.ifmo.rain.abduqodir.photoframe.slideshow.SlideshowActivity;
+import ru.ifmo.rain.abduqodir.photoframe.Utils;
 
 public class DirectoryContentActivity extends AppCompatActivity
     implements LoaderManager.LoaderCallbacks<List<ListItem>>,
@@ -61,7 +62,7 @@ public class DirectoryContentActivity extends AppCompatActivity
     }
 
     if (!ROOT_DIRECTORY.equals(currentDirectory)) {
-      setTitle(currentDirectory.substring(1));
+      setTitle(Utils.getFolderName(currentDirectory));
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     } else {
       getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -80,6 +81,9 @@ public class DirectoryContentActivity extends AppCompatActivity
 
   @Override
   public void onLoadFinished(Loader<List<ListItem>> loader, List<ListItem> data) {
+    if (((DirectoryContentLoader) loader).hasExceptionOccurred()) {
+      Toast.makeText(this, R.string.toast_unable_to_load, Toast.LENGTH_LONG).show();
+    }
     listItems.addAll(data);
     adapter.notifyDataSetChanged();
     progressBar.setVisibility(View.GONE);
@@ -101,31 +105,38 @@ public class DirectoryContentActivity extends AppCompatActivity
   }
 
   @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.directory_content_activity, menu);
+    return true;
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    int id = item.getItemId();
-    if (id == android.R.id.home) {
-      Intent intent = new Intent(this, DirectoryContentActivity.class);
-      intent.putExtra(DirectoryContentActivity.CREDENTIALS, credentials);
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        Utils.navigateBack(this, credentials, currentDirectory);
+        return true;
 
-      int lastDir = currentDirectory.lastIndexOf('/');
-      lastDir = lastDir == 0 ? 1 : lastDir;
-      intent.putExtra(DirectoryContentActivity.DIRECTORY, currentDirectory.substring(0, lastDir));
+      case R.id.menu_view_in_slideshow:
+        Utils.showInSlideShow(this, credentials, currentDirectory);
+        return true;
 
-      navigateUpTo(intent);
-      return true;
+      default:
+        return super.onOptionsItemSelected(item);
     }
-    return super.onOptionsItemSelected(item);
   }
 
   @Override
-  public void onDialogPositiveClick(DialogFragment dialog, String path) {
-    Intent intent = new Intent(this, SlideshowActivity.class);
-    intent.putExtra(DirectoryContentActivity.CREDENTIALS, credentials);
-    intent.putExtra(DirectoryContentActivity.DIRECTORY, path);
-    startActivity(intent);
+  public void onDialogPositiveClick(DialogFragment dialog, Bundle args) {
+    Utils.showInSlideShow(this, credentials, args.getString(DIRECTORY));
   }
 
   @Override
-  public void onDialogNegativeClick(DialogFragment dialog, String path) {
+  public void onDialogNegativeClick(DialogFragment dialog, Bundle args) {
+  }
+
+  @Override
+  public void onDialogNeutralClick(DialogFragment dialog, Bundle args) {
+    Utils.showDirectoryContent(this, credentials, args.getString(DIRECTORY), args.getBoolean(IS_SHARED));
   }
 }
