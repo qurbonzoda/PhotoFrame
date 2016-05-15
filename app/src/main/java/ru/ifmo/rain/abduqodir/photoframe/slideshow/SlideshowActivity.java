@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -32,10 +31,9 @@ import ru.ifmo.rain.abduqodir.photoframe.R;
 import ru.ifmo.rain.abduqodir.photoframe.Utils;
 import ru.ifmo.rain.abduqodir.photoframe.directory_content.DirectoryContentActivity;
 import ru.ifmo.rain.abduqodir.photoframe.directory_content.DirectoryContentLoader;
-import ru.ifmo.rain.abduqodir.photoframe.directory_content.NoticeDialogFragment;
 
 public class SlideshowActivity extends AppCompatActivity
-    implements NoticeDialogFragment.NoticeDialogListener {
+    implements Utils.NoticeDialogFragment.NoticeDialogListener {
 
   public static final int SLIDE_CHANGE_DELAY = 5000;
 
@@ -106,15 +104,6 @@ public class SlideshowActivity extends AppCompatActivity
   }
 
   @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == android.R.id.home) {
-      Utils.navigateBack(this, credentials, currentDirectory);
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
-  }
-
-  @Override
   public void onDialogPositiveClick(DialogFragment dialog, Bundle args) {
     dialog.dismiss();
     recreate();
@@ -122,14 +111,14 @@ public class SlideshowActivity extends AppCompatActivity
 
   @Override
   public void onDialogNegativeClick(DialogFragment dialog, Bundle args) {
-    Utils.navigateBack(this, credentials, currentDirectory);
+    dialog.dismiss();
   }
+
 
   @Override
   public void onDialogNeutralClick(DialogFragment dialog, Bundle args) {
-    Utils.showDirectoryContent(this, credentials, currentDirectory, true);
+    dialog.dismiss();
   }
-
 
   private final LoaderManager.LoaderCallbacks<File> fileLoaderListener =
       new LoaderManager.LoaderCallbacks<File>() {
@@ -228,21 +217,18 @@ public class SlideshowActivity extends AppCompatActivity
       if (isAnySlidesShowed) {
         taskHandler.postDelayed(() -> {
           try {
-            Utils.showDialog(this, R.string.dialog_slides_finished,
-                R.string.dialog_exit, R.string.dialog_restart, R.string.dialog_show_content, null);
+            Utils.showDialog(this, R.string.dialog_slides_finished, R.string.dialog_close,
+                R.string.dialog_restart);
           } catch (Exception e) {
             // the activity may be destroyed after SLIDE_CHANGE_DELAY
           }
         }, SLIDE_CHANGE_DELAY);
       } else {
         progressBar.setVisibility(View.GONE);
-        Utils.showUnpositiveDialog(this, R.string.dialog_no_photos, R.string.dialog_exit,
-            R.string.dialog_show_content, null);
+        Utils.showNeutralDialog(this, R.string.dialog_no_photos, R.string.dialog_close);
       }
     }
   }
-
-
 
 
   private final Runnable showPart2Runnable = () -> {

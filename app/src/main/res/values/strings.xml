@@ -5,9 +5,9 @@
     <string name="dialog_view_slideshow">Slideshow</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_show_content">Show content</string>
+    <string name="dialog_show_content">Content</string>
     <string name="dialog_slides_finished">Slides finished</string>
-    <string name="dialog_exit">Exit</string>
+    <string name="dialog_close">Close</string>
     <string name="dialog_restart">Restart</string>
     <string name="dialog_no_photos">No photos in this folder</string>
     <string name="toast_unable_to_load">Oops, something went wrong. We couldn\'t load content</string>

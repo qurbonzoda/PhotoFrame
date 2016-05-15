@@ -31,15 +31,13 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
   private final Credentials credentials;
   @NonNull
   private final DirectoryContentActivity activity;
-  private final boolean isContentShared;
 
   public DirectoryContentAdapter(@NonNull DirectoryContentActivity activity,
                                  @NonNull List<ListItem> listItems,
-                                 @NonNull Credentials credentials, boolean isContentShared) {
+                                 @NonNull Credentials credentials) {
     this.activity = activity;
     this.listItems = listItems;
     this.credentials = credentials;
-    this.isContentShared = isContentShared;
   }
 
   @Override
@@ -47,10 +45,10 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
     View v;
     if (viewType == TYPE_FOLDER) {
       v = LayoutInflater.from(parent.getContext()).inflate(R.layout.folder_item, parent, false);
-      return new FolderItemHolder(v, credentials, isContentShared, activity);
+      return new FolderItemHolder(v, credentials, activity);
     } else if (viewType == TYPE_FILE) {
       v = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_item, parent, false);
-      return new FileItemHolder(v, isContentShared);
+      return new FileItemHolder(v);
     } else {
       throw new IllegalStateException("unknown type: " + viewType);
     }
@@ -86,11 +84,9 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
     TextView name;
     @NonNull
     TextView metaInfo;
-    final boolean isParentShared;
 
-    public FileItemHolder(View itemView, boolean isContentShared) {
+    public FileItemHolder(View itemView) {
       super(itemView);
-      isParentShared = isContentShared;
       icon = (ImageView) itemView.findViewById(R.id.icon);
       shared = (ImageView) itemView.findViewById(R.id.shared);
       name = (TextView) itemView.findViewById(R.id.fileName);
@@ -107,8 +103,13 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
       int resourceId = (Utils.getFileResourceId(listItem.getMediaType(), listItem.getContentType()));
       icon.setImageResource(resourceId);
 
-      int visibility = !isParentShared && listItem.isShared() ? View.VISIBLE : View.GONE;
-      shared.setVisibility(visibility);
+
+      if (DirectoryContentActivity.ROOT_DIRECTORY
+          .equals(Utils.getParentDirectory(listItem.getFullPath())) && listItem.isShared()) {
+        shared.setVisibility(View.VISIBLE);
+      } else {
+        shared.setVisibility(View.GONE);
+      }
     }
   }
 
@@ -125,18 +126,15 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
     @SuppressWarnings("NullableProblems")
     @NonNull
     String path;
-    final boolean isParentShared;
     @NonNull
     private final DirectoryContentActivity activity;
-    boolean isFolderShared;
     @NonNull
     final Credentials credentials;
 
     public FolderItemHolder(@NonNull View itemView, @NonNull Credentials credentials,
-                            boolean isParentShared, @NonNull DirectoryContentActivity activity) {
+                            @NonNull DirectoryContentActivity activity) {
       super(itemView);
       this.credentials = credentials;
-      this.isParentShared = isParentShared;
       this.activity = activity;
 
       icon = (ImageView) itemView.findViewById(R.id.icon);
@@ -156,9 +154,12 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
       int resourceId = Utils.getFolderResourceId(displayName);
       icon.setImageResource(resourceId);
 
-      isFolderShared = listItem.isShared();
-      int visibility = !isParentShared && isFolderShared ? View.VISIBLE : View.GONE;
-      shared.setVisibility(visibility);
+      if (DirectoryContentActivity.ROOT_DIRECTORY.equals(Utils.getParentDirectory(path))
+          && listItem.isShared()) {
+        shared.setVisibility(View.VISIBLE);
+      } else {
+        shared.setVisibility(View.GONE);
+      }
     }
 
     @Override
@@ -174,7 +175,7 @@ public class DirectoryContentAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onClick(View v) {
-      Utils.showDirectoryContent(v.getContext(), credentials, path, isFolderShared);
+      Utils.showDirectoryContent(v.getContext(), credentials, path);
     }
   }
 }

@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         Credentials credentials = new Credentials(CLIENT_ID, token);
 
         Utils.showDirectoryContent(view.getContext(), credentials,
-            DirectoryContentActivity.ROOT_DIRECTORY, false);
+            DirectoryContentActivity.ROOT_DIRECTORY);
       } else {
         view.loadUrl(url);
       }

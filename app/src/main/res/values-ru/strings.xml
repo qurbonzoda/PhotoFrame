@@ -2,12 +2,12 @@
 <resources>
     <string name="app_name">Фоторамка</string>
     <string name="title_activity_slideshow">Слайд-шоу</string>
-    <string name="dialog_cancel">Отменить</string>
+    <string name="dialog_cancel">Отмена</string>
     <string name="dialog_yes">Да</string>
-    <string name="dialog_exit">Выход</string>
-    <string name="dialog_no_photos">В этой папки нет картинок</string>
+    <string name="dialog_close">Закрыть</string>
+    <string name="dialog_no_photos">В этой папке нет картинок</string>
     <string name="dialog_restart">Начать сначало</string>
-    <string name="dialog_show_content">Посмотреть cодержимое</string>
+    <string name="dialog_show_content">Содержимое</string>
     <string name="dialog_slides_finished">Слайды закончились</string>
     <string name="dialog_view_slideshow">Cлайд-шоу</string>
     <string name="toast_unable_to_load">Упс, что-то пошло не так. Мы не смогли загрузить содержимое</string>

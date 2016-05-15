@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,12 +25,11 @@ import ru.ifmo.rain.abduqodir.photoframe.Utils;
 
 public class DirectoryContentActivity extends AppCompatActivity
     implements LoaderManager.LoaderCallbacks<List<ListItem>>,
-    NoticeDialogFragment.NoticeDialogListener {
+    Utils.NoticeDialogFragment.NoticeDialogListener {
 
   public static final String ROOT_DIRECTORY = "/";
   public static final String DIRECTORY = "directory";
   public static final String CREDENTIALS = "credentials";
-  public static final String IS_SHARED = "is_shared";
 
   private RecyclerView recyclerView;
   private ProgressBar progressBar;
@@ -38,7 +38,6 @@ public class DirectoryContentActivity extends AppCompatActivity
   private String currentDirectory;
   private List<ListItem> listItems;
   private DirectoryContentAdapter adapter;
-  private boolean isContentShared;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -54,22 +53,23 @@ public class DirectoryContentActivity extends AppCompatActivity
     if (savedInstanceState == null) {
       credentials = getIntent().getParcelableExtra(CREDENTIALS);
       currentDirectory = getIntent().getStringExtra(DIRECTORY);
-      isContentShared = getIntent().getBooleanExtra(IS_SHARED, false);
     } else {
       credentials = savedInstanceState.getParcelable(CREDENTIALS);
       currentDirectory = savedInstanceState.getString(DIRECTORY);
-      isContentShared = savedInstanceState.getBoolean(IS_SHARED);
     }
 
-    if (!ROOT_DIRECTORY.equals(currentDirectory)) {
-      setTitle(Utils.getFolderName(currentDirectory));
-      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    } else {
-      getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    }
+    ActionBar actionBar = getSupportActionBar();
 
+    if (actionBar != null) {
+      if (!ROOT_DIRECTORY.equals(currentDirectory)) {
+        setTitle(Utils.getFolderName(currentDirectory));
+        actionBar.setDisplayHomeAsUpEnabled(true);
+      } else {
+        actionBar.setDisplayHomeAsUpEnabled(false);
+      }
+    }
     listItems = new ArrayList<>();
-    adapter = new DirectoryContentAdapter(this, listItems, credentials, isContentShared);
+    adapter = new DirectoryContentAdapter(this, listItems, credentials);
     recyclerView.setAdapter(adapter);
     getLoaderManager().initLoader(0, null, this);
   }
@@ -81,7 +81,7 @@ public class DirectoryContentActivity extends AppCompatActivity
 
   @Override
   public void onLoadFinished(Loader<List<ListItem>> loader, List<ListItem> data) {
-    if (((DirectoryContentLoader) loader).hasExceptionOccurred()) {
+    if (data.isEmpty() && ((DirectoryContentLoader) loader).hasExceptionOccurred()) {
       Toast.makeText(this, R.string.toast_unable_to_load, Toast.LENGTH_LONG).show();
     }
     listItems.addAll(data);
@@ -91,8 +91,6 @@ public class DirectoryContentActivity extends AppCompatActivity
 
   @Override
   public void onLoaderReset(Loader<List<ListItem>> loader) {
-    listItems.clear();
-    adapter.notifyDataSetChanged();
   }
 
   @Override
@@ -101,7 +99,6 @@ public class DirectoryContentActivity extends AppCompatActivity
 
     savedInstanceState.putParcelable(CREDENTIALS, credentials);
     savedInstanceState.putString(DIRECTORY, currentDirectory);
-    savedInstanceState.putBoolean(IS_SHARED, isContentShared);
   }
 
   @Override
@@ -114,7 +111,7 @@ public class DirectoryContentActivity extends AppCompatActivity
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        Utils.navigateBack(this, credentials, currentDirectory);
+        Utils.navigateTo(this, credentials, Utils.getParentDirectory(currentDirectory));
         return true;
 
       case R.id.menu_view_in_slideshow:
@@ -133,10 +130,11 @@ public class DirectoryContentActivity extends AppCompatActivity
 
   @Override
   public void onDialogNegativeClick(DialogFragment dialog, Bundle args) {
+    dialog.dismiss();
   }
 
   @Override
   public void onDialogNeutralClick(DialogFragment dialog, Bundle args) {
-    Utils.showDirectoryContent(this, credentials, args.getString(DIRECTORY), args.getBoolean(IS_SHARED));
+    Utils.showDirectoryContent(this, credentials, args.getString(DIRECTORY));
   }
 }
