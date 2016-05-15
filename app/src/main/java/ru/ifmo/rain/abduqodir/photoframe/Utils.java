@@ -193,7 +193,7 @@ public class Utils {
   public static void showDialog(@NonNull AppCompatActivity activity, int messageId, int negativeId,
                                 int neutralId) {
     NoticeDialogFragment.newInstance(activity.getString(messageId),
-        activity.getString(negativeId), null, activity.getString(neutralId), null)
+        activity.getString(negativeId), activity.getString(neutralId), null, null)
         .show(activity.getSupportFragmentManager(), "NoticeDialogFragment");
   }
 
